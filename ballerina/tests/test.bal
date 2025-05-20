@@ -52,7 +52,7 @@ string parentFolderId = EMPTY_STRING;
 string channelId = EMPTY_STRING;
 string resourceId = EMPTY_STRING;
 
-###################
+# ##################
 # Get File By Id
 # ################
 
@@ -62,7 +62,7 @@ string resourceId = EMPTY_STRING;
 function testGetFileById() {
     log:printInfo("Gdrive Client -> testGetFileById()");
     File|error response = driveClient->getFile(fileId);
-    if(response is File){
+    if (response is File) {
         test:assertNotEquals(response?.id, EMPTY_STRING, msg = "Expect File id");
         log:printInfo(response.toString());
     } else {
@@ -71,7 +71,7 @@ function testGetFileById() {
     }
 }
 
-#########################
+# ########################
 # Get File Content By Id
 # #######################
 
@@ -83,17 +83,16 @@ function testGetFileContentById() {
     FileContent|error response = driveClient->getFileContent(fileId);
     if (response is FileContent) {
         log:printInfo(response.toString());
-    } 
+    }
     else {
         log:printError(response.message());
         test:assertFail(response.message());
     }
 }
 
-#######################
+# ######################
 # Delete File by ID
 # #####################
-
 // @test:AfterSuite {}
 function testDeleteFileById() {
     log:printInfo("Gdrive Client -> testDeleteFileById()");
@@ -107,7 +106,7 @@ function testDeleteFileById() {
     }
 }
 
-############
+# ###########
 # Copy File
 # ##########
 
@@ -120,7 +119,7 @@ function testCopyFile() {
     string destinationFolderId = parentFolderId;
     string newFileName = "ballerina_temp_file_copy";
     File|error response = driveClient->copyFile(sourceFileId, destinationFolderId, newFileName);
-    if(response is File){
+    if (response is File) {
         test:assertNotEquals(response?.id, EMPTY_STRING, msg = "Expect File id");
         log:printInfo(response?.id.toString());
     } else {
@@ -129,19 +128,19 @@ function testCopyFile() {
     }
 }
 
-############
+# ###########
 # Move File
 # ##########
 
 @test:Config {
     dependsOn: [testCreateFile]
 }
-function testMoveFile(){
+function testMoveFile() {
     log:printInfo("Gdrive Client -> testMoveFile()");
     string sourceFileId = fileId;
     string destinationFolderId = parentFolderId;
     File|error response = driveClient->moveFile(sourceFileId, destinationFolderId);
-    if(response is File){
+    if (response is File) {
         test:assertNotEquals(response?.id, EMPTY_STRING, msg = "Expect File id");
         log:printInfo(response?.id.toString());
     } else {
@@ -150,7 +149,7 @@ function testMoveFile(){
     }
 }
 
-############################
+# ###########################
 # Rename file
 # ##########################
 
@@ -159,10 +158,10 @@ function testMoveFile(){
 }
 function testRenameFile() {
     log:printInfo("Gdrive Client -> testRenameFile()");
-    string newFileName = fileName+"_renamed";
+    string newFileName = fileName + "_renamed";
     File|error response = driveClient->renameFile(fileId, newFileName);
     //Assertions
-    if(response is File){
+    if (response is File) {
         test:assertNotEquals(response?.id, EMPTY_STRING, msg = "Expect File id");
         log:printInfo(response?.id.toString());
     } else {
@@ -171,7 +170,7 @@ function testRenameFile() {
     }
 }
 
-############################
+# ###########################
 # Update Metadata in a file
 # ##########################
 
@@ -181,16 +180,16 @@ function testRenameFile() {
 function testUpdateFile() {
     log:printInfo("Gdrive Client -> testUpdateFile()");
     UpdateFileMetadataOptional optionalsFileMetadata = {
-        addParents : parentFolderId
+        addParents: parentFolderId
     };
     FileMetadata payloadFileMetadata = {
-        name : fileName,
-        mimeType : "application/vnd.google-apps.document",
-        description : "A short description of the file"
+        name: fileName,
+        mimeType: "application/vnd.google-apps.document",
+        description: "A short description of the file"
     };
     File|error response = driveClient->updateFileMetadataById(fileId, payloadFileMetadata, optionalsFileMetadata);
     //Assertions
-    if(response is File){
+    if (response is File) {
         test:assertNotEquals(response?.id, EMPTY_STRING, msg = "Expect File id");
         log:printInfo(response?.id.toString());
     } else {
@@ -199,7 +198,7 @@ function testUpdateFile() {
     }
 }
 
-################
+# ###############
 # Create folder
 # #############
 
@@ -209,18 +208,18 @@ function testCreateFolder() {
     File|error response = driveClient->createFolder(folderName);
     //File|error response = driveClient->createFolder(folderName, "<PARENT_FOLDER_ID>");
     //Assertions
-    if(response is File){
+    if (response is File) {
         test:assertNotEquals(response?.id, EMPTY_STRING, msg = "Expect File id");
         log:printInfo(response?.id.toString());
         //Set variable fileId for other unit tests
-        parentFolderId = <@untainted> response?.id.toString();
+        parentFolderId = <@untainted>response?.id.toString();
     } else {
         log:printError(response.message());
         test:assertFail(response.message());
     }
 }
 
-##############
+# #############
 # Create file 
 # ############
 
@@ -233,18 +232,18 @@ function testCreateFile() {
     //File|error response = driveClient->createFile(fileName, DOCUMENT);
     //File|error response = driveClient->createFile(fileName, DOCUMENT, parentFolderId);
     //Assertions
-    if(response is File){
+    if (response is File) {
         test:assertNotEquals(response?.id, EMPTY_STRING, msg = "Expect File id");
         log:printInfo(response?.id.toString());
         //Set variable fileId for other unit tests
-        fileId = <@untainted> response?.id.toString();
+        fileId = <@untainted>response?.id.toString();
     } else {
         log:printError(response.message());
         test:assertFail(response.message());
     }
 }
 
-#######################################
+# ######################################
 # Search files by name (Partial search)
 # #####################################
 
@@ -253,8 +252,8 @@ function testGetFilesByName() {
     log:printInfo("Gdrive Client -> testGetFilesByName()");
     stream<File>|error response = driveClient->getFilesByName("ballerina");
     // stream<File>|error response = driveClient->getFilesByName("ballerina", "createdTime");
-    if (response is stream<File>){
-        response.forEach(isolated function (File file) {
+    if (response is stream<File>) {
+        response.forEach(isolated function(File file) {
             test:assertNotEquals(file?.id, EMPTY_STRING, msg = "Expect File id");
         });
     } else {
@@ -263,7 +262,7 @@ function testGetFilesByName() {
     }
 }
 
-##########################################
+# #########################################
 # Search folders by name (Partial search)
 # ########################################
 
@@ -272,8 +271,8 @@ function testGetFoldersByName() {
     log:printInfo("Gdrive Client -> testGetFoldersByName()");
     stream<File>|error response = driveClient->getFoldersByName("ballerina");
     // stream<File>|error response = driveClient->getFoldersByName("ballerina", "createdTime");
-    if (response is stream<File>){
-        response.forEach(isolated function (File file) {
+    if (response is stream<File>) {
+        response.forEach(isolated function(File file) {
             test:assertNotEquals(file?.id, EMPTY_STRING, msg = "Expect File id");
         });
     } else {
@@ -282,17 +281,17 @@ function testGetFoldersByName() {
     }
 }
 
-###################
+# ##################
 # Get all files
 # #################
 
 @test:Config {}
-function testAllGetFiles() { 
+function testAllGetFiles() {
     log:printInfo("Gdrive Client -> testAllGetFiles()");
     stream<File>|error response = driveClient->getAllFiles("not name contains 'hello'");
     // stream<File>|error response = driveClient->getAllFiles();
-    if (response is stream<File>){
-        response.forEach(isolated function (File file) {
+    if (response is stream<File>) {
+        response.forEach(isolated function(File file) {
             test:assertNotEquals(file?.id, EMPTY_STRING, msg = "Expect File id");
         });
     } else {
@@ -301,7 +300,7 @@ function testAllGetFiles() {
     }
 }
 
-#############################
+# ############################
 # Get All Google spreadsheets 
 # ###########################
 
@@ -309,8 +308,8 @@ function testAllGetFiles() {
 function testGetAllSpreadsheets() {
     log:printInfo("Gdrive Client -> testGetAllSpreadsheets()");
     stream<File>|error response = driveClient->getAllSpreadsheets();
-    if (response is stream<File>){
-        response.forEach(isolated function (File file) {
+    if (response is stream<File>) {
+        response.forEach(isolated function(File file) {
             test:assertNotEquals(file?.id, EMPTY_STRING, msg = "Expect File id");
         });
     } else {
@@ -319,7 +318,7 @@ function testGetAllSpreadsheets() {
     }
 }
 
-######################################################
+# #####################################################
 # Search Google spreadsheets by name (Partial search)
 # ####################################################
 
@@ -328,8 +327,8 @@ function testGetSpreadsheetsByName() {
     log:printInfo("Gdrive Client -> testGetSpreadsheetsByName()");
     stream<File>|error response = driveClient->getSpreadsheetsByName("ballerina");
     // stream<File>|error response = driveClient->getSpreadsheetsByName("ballerina","createdTime");
-    if (response is stream<File>){
-        response.forEach(isolated function (File file) {
+    if (response is stream<File>) {
+        response.forEach(isolated function(File file) {
             test:assertNotEquals(file?.id, EMPTY_STRING, msg = "Expect File id");
         });
     } else {
@@ -338,7 +337,7 @@ function testGetSpreadsheetsByName() {
     }
 }
 
-###################################################
+# ##################################################
 # Search Google documents by name (Partial search)
 # ################################################
 
@@ -347,8 +346,8 @@ function testGetDocumentsByName() {
     log:printInfo("Gdrive Client -> testGetDocumentsByName()");
     stream<File>|error response = driveClient->getDocumentsByName("ballerina");
     // stream<File>|error response = driveClient->getDocumentsByName("ballerina", "createdTime");
-    if (response is stream<File>){
-        response.forEach(isolated function (File file) {
+    if (response is stream<File>) {
+        response.forEach(isolated function(File file) {
             test:assertNotEquals(file?.id, EMPTY_STRING, msg = "Expect File id");
         });
     } else {
@@ -357,7 +356,7 @@ function testGetDocumentsByName() {
     }
 }
 
-##############################################
+# #############################################
 # Search Google forms by name (Partial search)
 # ############################################
 
@@ -366,8 +365,8 @@ function testGetFormsByName() {
     log:printInfo("Gdrive Client -> testGetFormsByName()");
     stream<File>|error response = driveClient->getFormsByName("ballerina");
     // stream<File>|error response = driveClient->getFormsByName("ballerina", "createdTime");
-    if (response is stream<File>){
-        response.forEach(isolated function (File file) {
+    if (response is stream<File>) {
+        response.forEach(isolated function(File file) {
             test:assertNotEquals(file?.id, EMPTY_STRING, msg = "Expect File id");
         });
     } else {
@@ -376,7 +375,7 @@ function testGetFormsByName() {
     }
 }
 
-##############################################
+# #############################################
 # Search Google slides by name (Partial search)
 # ############################################
 
@@ -385,8 +384,8 @@ function testGetSlidesByName() {
     log:printInfo("Gdrive Client -> testGetSlidesByName()");
     stream<File>|error response = driveClient->getSlidesByName("ballerina");
     // stream<File>|error response = driveClient->getSlidesByName("ballerina", "createdTime");
-    if (response is stream<File>){
-        response.forEach(isolated function (File file) {
+    if (response is stream<File>) {
+        response.forEach(isolated function(File file) {
             test:assertNotEquals(file?.id, EMPTY_STRING, msg = "Expect File id");
         });
     } else {
@@ -395,7 +394,7 @@ function testGetSlidesByName() {
     }
 }
 
-##############
+# #############
 # Upload File
 # ############
 
@@ -406,7 +405,7 @@ function testUploadFile() {
     log:printInfo("Gdrive Client -> testUploadFile()");
     File|error response = driveClient->uploadFile(localFilePath);
     // Assertions 
-    if(response is File){
+    if (response is File) {
         test:assertNotEquals(response?.id, EMPTY_STRING, msg = "Expect File id");
     } else {
         log:printError(response.message());
@@ -414,7 +413,7 @@ function testUploadFile() {
     }
 }
 
-################
+# ###############
 # Download File
 # ##############
 
@@ -425,7 +424,7 @@ function testDownloadFileById() {
     log:printInfo("Gdrive Client -> testDownloadFileById()");
     string downloadFileId = fileId;
     string|error response = driveClient->downloadFile(downloadFileId);
-    if(response is string){
+    if (response is string) {
         test:assertNotEquals(response, EMPTY_STRING, msg = "Expect download URL link");
         log:printInfo(response);
     } else {
@@ -433,7 +432,7 @@ function testDownloadFileById() {
     }
 }
 
-###############################
+# ##############################
 # Upload File using Byte Array
 # #############################
 
@@ -442,10 +441,10 @@ function testDownloadFileById() {
 }
 function testUploadFileUsingByteArray() {
     log:printInfo("Gdrive Client -> testUploadFileUsingByteArray()");
-    byte[] byteArray = [116,101,115,116,45,115,116,114,105,110,103];
+    byte[] byteArray = [116, 101, 115, 116, 45, 115, 116, 114, 105, 110, 103];
     File|error response = driveClient->uploadFileUsingByteArray(byteArray, fileName);
     // Assertions 
-    if(response is File){
+    if (response is File) {
         string id = response?.id.toString();
         log:printInfo(id);
         test:assertNotEquals(id, EMPTY_STRING, msg = "Expect File id");
@@ -455,13 +454,35 @@ function testUploadFileUsingByteArray() {
     }
 }
 
+@test:Mock {functionName: "exportFile"}
+function mockExportFile(string fileId, string mimeType) returns FileContent|error {
+    log:printInfo("Mocked exportFile function called");
+    FileContent fileContent = {
+        mimeType,
+        content: [
+            116,
+            101,
+            115,
+            116,
+            45,
+            115,
+            116,
+            114,
+            105,
+            110,
+            103
+        ]
+    };
+    return fileContent;
+}
+
 @test:Config {
     dependsOn: [testCreateFile]
 }
 function testExportFile() returns error? {
     log:printInfo("Gdrive Client -> testExportFile()");
     string mimeType = "text/markdown";
-    FileContent content = check driveClient->exportFile(docFileId, mimeType);
+    FileContent content = check driveClient->exportFile(fileId, mimeType);
     log:printInfo(content.toString().substring(0, 10));
     test:assertNotEquals(content, EMPTY_STRING, msg = "Expect File content");
 }
